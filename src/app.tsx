@@ -18,6 +18,7 @@ export function App() {
           <Route path="/verify-email" element={<EmailVerification />} />
         </Route>
         <Route path="/" element={<Home />} />
+        <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
     </Router>
   );

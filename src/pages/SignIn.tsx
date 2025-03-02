@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SignInDto } from "../dto/SignInDto";
-
-
+import { signin } from "../services/api";
 
 const schema = z.object({
   email: z.string().email("Invalid email"),
@@ -28,14 +27,30 @@ export const SignIn: React.FC = () => {
     resolver: zodResolver(schema),
   });
 
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const navigate = useNavigate();   
+
   useEffect(() => {
     return () => {
       reset();
     };
   }, [reset]);
 
-  const onSubmit = (data: SignInDto) =>
-    console.log("Submitted:", data);
+  const onSubmit = async (data: SignInDto) => {
+    try {
+      setLoading(true);
+      await signin(data);
+      setErrorMessage(null);
+      navigate("/");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -64,7 +79,7 @@ export const SignIn: React.FC = () => {
         )}
 
         <button
-          disabled={!isValid}
+          disabled={!isValid || loading}
           type="submit"
           className={`w-full p-2 rounded  ${
             isValid
@@ -72,7 +87,7 @@ export const SignIn: React.FC = () => {
               : "bg-gray-400 text-gray-200 cursor-not-allowed"
           }`}
         >
-          Sign In
+          {loading ? "Signing In..." : " Sign In"}
         </button>
       </form>
 
@@ -82,6 +97,8 @@ export const SignIn: React.FC = () => {
           Sign up
         </Link>
       </p>
+
+      <p className="text-red-500 text-sm">{errorMessage}</p>
     </div>
   );
 };
