@@ -1,14 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-
-export type AuthFormData = {
-  email: string;
-  password: string;
-  username: string;
-};
 
 const schema = z.object({
   email: z.string().email("Invalid email"),
@@ -21,6 +15,8 @@ const schema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters long"),
 });
 import { useEffect } from "react";
+import { CreateUserDto } from "../dto/CreateUserDto";
+import { signup } from "../services/api";
 
 export const SignUp: React.FC = () => {
   const {
@@ -29,17 +25,34 @@ export const SignUp: React.FC = () => {
     formState: { errors, isValid },
     trigger,
     reset,
-  } = useForm<AuthFormData>({ resolver: zodResolver(schema) });
+  } = useForm<CreateUserDto>({ resolver: zodResolver(schema) });
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
+      setLoading(false);
       reset();
+      setErrorMessage(null);
     };
   }, [reset]);
 
-  const onSubmit = (data: AuthFormData) => console.log("Submitted:", data);
+  const onSubmit = async (data: CreateUserDto) => {
+    try {
+      setLoading(true);
+      await signup(data);
+      setErrorMessage(null);
+      navigate("/verification");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <form
@@ -78,7 +91,7 @@ export const SignUp: React.FC = () => {
       )}
 
       <button
-        disabled={!isValid}
+        disabled={!isValid || loading}
         type="submit"
         className={`w-full p-2 rounded  ${
           isValid
@@ -86,7 +99,7 @@ export const SignUp: React.FC = () => {
             : "bg-gray-400 text-gray-200 cursor-not-allowed"
         }`}
       >
-        Sign Up
+        {loading ? "Signing Up..." : "Sign Up"}
       </button>
       <p className="mt-4 text-sm">
         Already have an account?{" "}
@@ -94,6 +107,8 @@ export const SignUp: React.FC = () => {
           Sign in
         </Link>
       </p>
+
+      {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
     </form>
   );
 };

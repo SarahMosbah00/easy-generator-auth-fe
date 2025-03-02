@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { AuthFormData } from "./SignUp";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
+import { SignInDto } from "../dto/SignInDto";
+
+
 
 const schema = z.object({
   email: z.string().email("Invalid email"),
@@ -22,7 +24,7 @@ export const SignIn: React.FC = () => {
     formState: { errors, isValid },
     trigger,
     reset,
-  } = useForm<Pick<AuthFormData, "email" | "password">>({
+  } = useForm<SignInDto>({
     resolver: zodResolver(schema),
   });
 
@@ -32,7 +34,7 @@ export const SignIn: React.FC = () => {
     };
   }, [reset]);
 
-  const onSubmit = (data: Pick<AuthFormData, "email" | "password">) =>
+  const onSubmit = (data: SignInDto) =>
     console.log("Submitted:", data);
 
   return (
