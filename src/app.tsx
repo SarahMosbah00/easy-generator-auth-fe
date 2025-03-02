@@ -5,6 +5,7 @@ import { SignIn } from "./pages/SignIn";
 import { EmailConfirmation } from "./pages/EmailConfirmation";
 import { Home } from "./pages/Home";
 import { AuthLayout } from "./layouts/Auth.layout";
+import { EmailVerification } from "./pages/EmailVerification";
 
 export function App() {
   return (
@@ -13,7 +14,8 @@ export function App() {
         <Route element={<AuthLayout />}>
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/verification" element={<EmailConfirmation />} />
+          <Route path="/confirmation" element={<EmailConfirmation />} />
+          <Route path="/verify-email" element={<EmailVerification />} />
         </Route>
         <Route path="/" element={<Home />} />
       </Routes>

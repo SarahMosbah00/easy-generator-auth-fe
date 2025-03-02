@@ -44,7 +44,7 @@ export const SignUp: React.FC = () => {
       setLoading(true);
       await signup(data);
       setErrorMessage(null);
-      navigate("/verification");
+      navigate("/confirmation");
     } catch (error: unknown) {
       if (error instanceof Error) {
         setErrorMessage(error.message);

@@ -36,3 +36,11 @@ export const signin = async (userData: SignInDto) => {
   }
   return response.json();
 };
+
+
+export const verifyEmail = async (token: string) => {
+    const response = await fetch(`${API_BASE_URL}/auth/verify-email?token=${token}`);
+    if (!response.ok) {
+      throw new Error("Email verification failed");
+    }
+}
