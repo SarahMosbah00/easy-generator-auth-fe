@@ -62,3 +62,15 @@ export const getProfile = async (): Promise<ProfileResponse> => {
 
   return response.json() as Promise<ProfileResponse>;
 };
+
+
+export const signout = async (): Promise<void> => {
+  const response = await fetch(`${API_BASE_URL}/auth/signout`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Signout failed");
+  }
+}
