@@ -1,9 +1,5 @@
 # Auth FE
 
-This application consists of two repositories: a front-end and a back-end. Below are the details of each repository and instructions on how to clone and set them up effectively.
-
-## Repositories
-
 ### Front-End Repository
 - **Path:** `easy-generator-auth-fe`
 - **URL:** `git@github.com:sarah-mosbah/easy-generator-auth-fe.git`
